@@ -1,7 +1,8 @@
 #!/bin/sh
+# Simple pre-commit hook to run lint-staged
 
-# Source husky scripts using an absolute path to avoid path resolution issues
-HUSKY_DIR="$(dirname "$0")"
-. "$HUSKY_DIR/_/husky.sh"
+# Exit on error
+set -e
 
+echo "Running pre-commit hook: linting staged files..."
 npx --no-install lint-staged

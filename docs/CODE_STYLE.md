@@ -57,7 +57,7 @@ npx nx lint webapp --fix
 
 ### Automatic Linting with Git Hooks
 
-This project uses Husky and lint-staged to automatically run linting before each commit:
+This project uses Git hooks to automatically run linting before each commit:
 
 1. When you commit changes, a pre-commit hook will run
 2. The hook will run `nx affected:lint --fix` on all staged files
