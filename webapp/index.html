@@ -1,15 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>My App</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/src/styles.css" />
-</head>
-<body>
-  <webapp-root></webapp-root>
-  <script type="module" src="/src/main.ts"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>EczEase - Your guide to eczema</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/src/styles.css" />
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-GX1H8Y8N08"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-GX1H8Y8N08");
+    </script>
+  </head>
+  <body>
+    <webapp-root></webapp-root>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

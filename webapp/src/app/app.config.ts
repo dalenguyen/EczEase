@@ -1,11 +1,11 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
 import {
   provideHttpClient,
   withFetch,
   withInterceptors,
-} from '@angular/common/http';
-import { provideClientHydration } from '@angular/platform-browser';
-import { provideFileRouter, requestContextInterceptor } from '@analogjs/router';
+} from '@angular/common/http'
+import { provideClientHydration } from '@angular/platform-browser'
+import { provideFileRouter, requestContextInterceptor } from '@analogjs/router'
 
 
 export const appConfig: ApplicationConfig = {
@@ -19,4 +19,4 @@ export const appConfig: ApplicationConfig = {
     ),
 
   ],
-};
+}

@@ -173,14 +173,24 @@ The application will be deployed to Google Cloud Platform:
    - Follow Angular style guide
    - Use TypeScript for type safety
    - Write unit tests for components and services
+   - Use single quotes for strings in TypeScript and JavaScript files
+   - Code style is enforced by ESLint
 
-2. **Git Workflow**:
+2. **Code Style Enforcement**:
+
+   - ESLint is configured to enforce single quotes for strings
+   - The configuration is defined in the project's `.eslintrc.json` files
+   - VS Code is set up to automatically fix quote style on save
+   - Linting can be run manually with `npx nx lint webapp` or `npx nx lint webapp --fix`
+   - The lint target is defined in the project.json file for proper NX integration
+
+3. **Git Workflow**:
 
    - Feature branch strategy
    - Pull request reviews
    - Semantic versioning
 
-3. **Documentation**:
+4. **Documentation**:
    - Code documentation with JSDoc
    - API documentation
    - User guides for complex features
