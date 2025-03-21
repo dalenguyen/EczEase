@@ -1,0 +1,13 @@
+{
+  "projects": {},
+  "targets": {
+    "eczease-prod": {
+      "hosting": {
+        "webapp": [
+          "eczease-prod"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

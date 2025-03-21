@@ -1,8 +1,12 @@
 {
   "name": "@eczease/source",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "firebase:deploy:firestore": "firebase deploy --only firestore",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules",
+    "firebase:deploy:webapp": "firebase deploy --only hosting:webapp --project=eczease-prod"
+  },
   "private": true,
   "dependencies": {
     "@analogjs/content": "^1.14.1",
