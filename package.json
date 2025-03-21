@@ -5,9 +5,13 @@
   "scripts": {
     "firebase:deploy:firestore": "firebase deploy --only firestore",
     "firebase:deploy:rules": "firebase deploy --only firestore:rules",
-    "firebase:deploy:webapp": "firebase deploy --only hosting:webapp --project=eczease-prod"
+    "firebase:deploy:webapp": "firebase deploy --only hosting:webapp --project=eczease-prod",
+    "lint-staged": "lint-staged"
   },
   "private": true,
+  "lint-staged": {
+    "*.{ts,js,html}": "nx affected:lint --fix"
+  },
   "dependencies": {
     "@analogjs/content": "^1.14.1",
     "@analogjs/router": "^1.14.1",
@@ -51,7 +55,9 @@
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "autoprefixer": "^10.4.0",
     "eslint": "8.56.0",
+    "husky": "^9.0.0",
     "jsdom": "^22.1.0",
+    "lint-staged": "^15.0.0",
     "nx": "20.6.2",
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.2",

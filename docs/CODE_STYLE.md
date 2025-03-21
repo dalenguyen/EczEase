@@ -55,6 +55,21 @@ npx nx lint webapp
 npx nx lint webapp --fix
 ```
 
+### Automatic Linting with Git Hooks
+
+This project uses Husky and lint-staged to automatically run linting before each commit:
+
+1. When you commit changes, a pre-commit hook will run
+2. The hook will run `nx affected:lint --fix` on all staged files
+3. If linting fails or cannot automatically fix issues, the commit will be blocked
+4. Fix the issues manually and try committing again
+
+To temporarily bypass the pre-commit hook (not recommended), use:
+
+```bash
+git commit -m "Your message" --no-verify
+```
+
 ## Best Practices
 
 1. **Always check linting before committing code**

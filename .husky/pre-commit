@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Source husky scripts using an absolute path to avoid path resolution issues
+HUSKY_DIR="$(dirname "$0")"
+. "$HUSKY_DIR/_/husky.sh"
+
+npx --no-install lint-staged
