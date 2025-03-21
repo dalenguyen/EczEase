@@ -7,7 +7,7 @@ import {
 import { provideClientHydration } from '@angular/platform-browser'
 import { provideFileRouter, requestContextInterceptor } from '@analogjs/router'
 
-
+//
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -17,6 +17,5 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([requestContextInterceptor])
     ),
-
   ],
 }

@@ -10,7 +10,7 @@
   },
   "private": true,
   "lint-staged": {
-    "*.{ts,js,html}": "nx affected:lint --fix"
+    "*.{ts,js,html}": "node lint-staged.js"
   },
   "dependencies": {
     "@analogjs/content": "^1.14.1",

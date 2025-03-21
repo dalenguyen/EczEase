@@ -60,7 +60,7 @@ npx nx lint webapp --fix
 This project uses Git hooks to automatically run linting before each commit:
 
 1. When you commit changes, a pre-commit hook will run
-2. The hook will run `nx affected:lint --fix` on all staged files
+2. The hook will run `eslint --fix` on all staged files with .ts, .js, and .html extensions
 3. If linting fails or cannot automatically fix issues, the commit will be blocked
 4. Fix the issues manually and try committing again
 
