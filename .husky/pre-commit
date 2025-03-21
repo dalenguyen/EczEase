@@ -1,0 +1,8 @@
+#!/bin/sh
+# Simple pre-commit hook to run lint-staged
+
+# Exit on error
+set -e
+
+echo "Running pre-commit hook: linting staged files..."
+npx --no-install lint-staged

@@ -24,13 +24,22 @@
             "prefix": "webapp",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+        "semi": ["error", "never"]
       }
     },
     {
       "files": ["*.html"],
       "extends": ["plugin:@nx/angular-template"],
       "rules": {}
+    },
+    {
+      "files": ["*.js"],
+      "rules": {
+        "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+        "semi": ["error", "never"]
+      }
     }
   ]
 }

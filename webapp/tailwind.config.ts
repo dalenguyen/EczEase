@@ -1,6 +1,6 @@
-import type { Config } from 'tailwindcss';
-import { createGlobPatternsForDependencies } from '@nx/angular/tailwind';
-import { join } from 'node:path';
+import type { Config } from 'tailwindcss'
+import { createGlobPatternsForDependencies } from '@nx/angular/tailwind'
+import { join } from 'node:path'
 
 export default {
   content: [
@@ -11,4 +11,4 @@ export default {
     extend: {},
   },
   plugins: [],
-} satisfies Config;
+} satisfies Config

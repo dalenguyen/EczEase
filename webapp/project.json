@@ -76,6 +76,14 @@
     },
     "copy": {
       "command": "cp webapp/Dockerfile dist/webapp/analog"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["webapp/**/*.{ts,html,js}"],
+        "fix": false
+      }
     }
   },
   "tags": ["type:app", "scope:webapp"],
