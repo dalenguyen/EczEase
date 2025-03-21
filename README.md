@@ -2,6 +2,21 @@
 
 Eczema & Food Allergy Tech Solution
 
+## Development
+
+Set up default GCP project
+
+```bash
+gcloud auth application-default login
+gcloud config set project YOUR_GCP_PROJECT
+```
+
+Run the project
+
+```bash
+npx nx serve webapp
+```
+
 ## Roadmap
 
 This project involves developing a tech platform to support individuals with eczema and food allergies. The platform will include:

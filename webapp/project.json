@@ -47,11 +47,37 @@
     },
     "test": {
       "executor": "@analogjs/vitest-angular:test",
-      "outputs": [
-        "{projectRoot}/coverage"
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx deploy-docker webapp", "nx deploy-cloudrun webapp"],
+        "color": true,
+        "parallel": false
+      },
+      "dependsOn": [
+        {
+          "target": "build"
+        }
       ]
+    },
+    "deploy-cloudrun": {
+      "command": "gcloud run deploy webapp --image=us-central1-docker.pkg.dev/eczease-prod/eczease/webapp --platform=managed --project=eczease-prod --region=us-central1 --allow-unauthenticated"
+    },
+    "deploy-docker": {
+      "command": "./build-new-image.sh --dir dist/webapp/analog --image webapp",
+      "parallel": false,
+      "dependsOn": [
+        {
+          "target": "copy"
+        }
+      ]
+    },
+    "copy": {
+      "command": "cp webapp/Dockerfile dist/webapp/analog"
     }
   },
-  "tags": [],
+  "tags": ["type:app", "scope:webapp"],
   "sourceRoot": "./webapp/src"
 }
