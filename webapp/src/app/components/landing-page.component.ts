@@ -1,10 +1,10 @@
-import { Component, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
+import { Component, inject, model, signal } from '@angular/core'
+import { FormsModule } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { HttpClient } from '@angular/common/http'
 
 @Component({
-  selector: "webapp-landing-page",
+  selector: 'webapp-landing-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
@@ -97,9 +97,9 @@ import { HttpClient } from "@angular/common/http";
                 <button
                   type="submit"
                   class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 sm:py-3 px-4 rounded-lg transition duration-300"
-                  [disabled]="isSubmitting"
+                  [disabled]="isSubmitting()"
                 >
-                  <span *ngIf="isSubmitting">
+                  <span *ngIf="isSubmitting()">
                     <svg
                       class="animate-spin -ml-1 mr-2 h-4 w-4 inline-block text-white"
                       xmlns="http://www.w3.org/2000/svg"
@@ -122,20 +122,20 @@ import { HttpClient } from "@angular/common/http";
                     </svg>
                     Submitting...
                   </span>
-                  <span *ngIf="!isSubmitting">Join Waitlist</span>
+                  <span *ngIf="!isSubmitting()">Join Waitlist</span>
                 </button>
               </form>
               <div
-                *ngIf="showSuccess"
+                *ngIf="showSuccess()"
                 class="mt-3 sm:mt-4 text-green-600 font-medium"
               >
                 Thank you for joining our waitlist! We'll keep you updated.
               </div>
               <div
-                *ngIf="errorMessage"
+                *ngIf="errorMessage()"
                 class="mt-3 sm:mt-4 text-red-600 font-medium"
               >
-                {{ errorMessage }}
+                {{ errorMessage() }}
               </div>
             </div>
           </div>
@@ -342,6 +342,34 @@ import { HttpClient } from "@angular/common/http";
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-6 sm:py-8">
       <div class="container mx-auto px-4 sm:px-6 text-center">
+        <div class="flex justify-center space-x-4 mb-3">
+          <a
+            href="https://x.com/EczEase"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-400 hover:text-white transition-colors duration-300"
+            aria-label="Follow us on X/Twitter"
+          >
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://github.com/dalenguyen/EczEase"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-400 hover:text-white transition-colors duration-300"
+            aria-label="View our GitHub repository"
+          >
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+              />
+            </svg>
+          </a>
+        </div>
         <p class="text-gray-400">
           &copy; {{ currentYear }} EczEase. All rights reserved.
         </p>
@@ -350,58 +378,69 @@ import { HttpClient } from "@angular/common/http";
   `,
 })
 export class LandingPageComponent {
-  name: string = "";
-  email: string = "";
-  isSubmitting = false;
-  showSuccess = false;
-  errorMessage: string | null = null;
-  currentYear: number = new Date().getFullYear();
+  private readonly http = inject(HttpClient)
 
-  constructor(private http: HttpClient) {}
+  name = model<string>('')
+  email = model<string>('')
+  isSubmitting = signal<boolean>(false)
+  showSuccess = signal<boolean>(false)
+  errorMessage = signal<string | null>(null)
+  currentYear: number = new Date().getFullYear()
 
   onSubmit(event: Event) {
-    event.preventDefault();
-    this.isSubmitting = true;
-    this.errorMessage = null;
+    event.preventDefault()
+    this.isSubmitting.set(true)
+    this.errorMessage.set(null)
 
-    const name = this.name;
-    const email = this.email;
+    // Validate name and email
+    if (!this.name() || this.name().trim() === '') {
+      this.errorMessage.set('Name is required')
+      this.isSubmitting.set(false)
+      return
+    }
+
+    if (!this.email() || this.email().trim() === '') {
+      this.errorMessage.set('Email is required')
+      this.isSubmitting.set(false)
+      return
+    }
 
     this.http
-      .post<{ success: boolean; message: string }>("/api/v1/newsletter", {
-        name,
-        email,
+      .post<{ success: boolean; message: string }>('/api/v1/newsletter', {
+        name: this.name(),
+        email: this.email(),
       })
       .subscribe({
         next: (response) => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false)
 
           if (response.success) {
-            this.showSuccess = true;
-            this.name = "";
-            this.email = "";
+            this.showSuccess.set(true)
+            this.name.set('')
+            this.email.set('')
 
             // Hide success message after 5 seconds
             setTimeout(() => {
-              this.showSuccess = false;
-            }, 5000);
+              this.showSuccess.set(false)
+            }, 5000)
           } else {
-            this.errorMessage =
-              response.message || "Failed to subscribe to newsletter";
+            this.errorMessage.set(
+              response.message || 'Failed to subscribe to newsletter'
+            )
           }
         },
         error: (error) => {
-          console.error("Newsletter subscription error:", error);
-          this.isSubmitting = false;
-          this.errorMessage = "An error occurred. Please try again later.";
+          console.error('Newsletter subscription error:', error)
+          this.isSubmitting.set(false)
+          this.errorMessage.set('An error occurred. Please try again later.')
         },
-      });
+      })
   }
 
   scrollToContact() {
-    const contactElement = document.getElementById("contact");
+    const contactElement = document.getElementById('contact')
     if (contactElement) {
-      contactElement.scrollIntoView({ behavior: "smooth" });
+      contactElement.scrollIntoView({ behavior: 'smooth' })
     }
   }
 }

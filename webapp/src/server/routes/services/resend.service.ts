@@ -1,13 +1,13 @@
-import { Resend } from "resend";
+import { Resend } from 'resend'
 
 /**
  * ResendService - A service for handling email operations using Resend
  */
 export class ResendService {
-  private readonly resend: Resend;
+  private readonly resend: Resend
 
   constructor() {
-    this.resend = new Resend(process.env["RESEND_API_KEY"]);
+    this.resend = new Resend(process.env['RESEND_API_KEY'])
   }
 
   /**
@@ -28,8 +28,8 @@ export class ResendService {
       email,
       firstName,
       lastName,
-      audienceId: audienceId ?? process.env["RESEND_AUDIENCE_ID"] ?? "",
-    });
+      audienceId: audienceId ?? process.env['RESEND_AUDIENCE_ID'] ?? '',
+    })
   }
 
   /**
@@ -42,15 +42,15 @@ export class ResendService {
    */
   async sendEmail(to: string, subject: string, html: string, from?: string) {
     return this.resend.emails.send({
-      from: from ?? process.env["RESEND_FROM_EMAIL"] ?? "dale@eczease.com",
+      from: from ?? process.env['RESEND_FROM_EMAIL'] ?? 'dale@eczease.com',
       to,
       subject,
       html,
-    });
+    })
   }
 }
 
 // Create a singleton instance
-const resendService = new ResendService();
+const resendService = new ResendService()
 
-export default resendService;
+export default resendService
