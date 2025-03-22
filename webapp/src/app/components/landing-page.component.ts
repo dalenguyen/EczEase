@@ -315,6 +315,13 @@ import { HttpClient } from '@angular/common/http'
           </div>
         </div>
       </div>
+
+      <!-- SafePlate Note -->
+      <div class="container mx-auto px-4 sm:px-6 mt-8 text-center">
+        <p class="text-gray-600 italic max-w-3xl mx-auto">
+          <i>Looking for immediate help with allergy-friendly meal planning? Try <a href="https://safeplate.ai/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 transition-colors duration-300">SafePlate.ai</a> — an iOS app designed to make dining safer and more enjoyable for people with food allergies.</i>
+        </p>
+      </div>
     </section>
 
     <!-- About Section -->
