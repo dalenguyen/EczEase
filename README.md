@@ -2,6 +2,10 @@
 
 Eczema & Food Allergy Tech Solution
 
+Web: https://eczease.com
+
+> Looking for immediate help with allergy-friendly meal planning? Try 🍽️ **[SafePlate.ai (Beta)](https://SafePlate.ai)** — an iOS app designed to make dining safer and more enjoyable for people with food allergies.
+
 ## Development
 
 Set up default GCP project
