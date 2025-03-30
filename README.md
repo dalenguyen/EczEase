@@ -15,6 +15,8 @@ gcloud auth application-default login
 gcloud config set project YOUR_GCP_PROJECT
 ```
 
+Change the `.env-template` to `.env` and enter your missing environment data.
+
 Run the project
 
 ```bash
