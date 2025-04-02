@@ -8,6 +8,8 @@ Web: https://eczease.com
 
 ## Development
 
+This project uses [pnpm](https://pnpm.io/) for package management. Please ensure you have it installed (`npm install -g pnpm`) and use `pnpm install` instead of `npm install` or `yarn install`.
+
 Set up default GCP project
 
 ```bash
