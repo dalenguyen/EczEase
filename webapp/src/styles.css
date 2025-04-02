@@ -1,8 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import 'prismjs/themes/prism.css';
+
 
 html, body {
-display: block;
-height: 100%;
+  display: block;
+  height: 100%;
 }
