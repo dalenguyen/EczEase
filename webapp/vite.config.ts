@@ -21,7 +21,11 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      analog(),
+      analog({
+        content: {
+          prismOptions: {},
+        },
+      }),
       nxViteTsPaths(),
     ],
     test: {
