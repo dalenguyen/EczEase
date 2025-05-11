@@ -108,11 +108,11 @@ const createStoreAndUploadInitialFile = async (filePath: string) => {
   // Create a vector store
   const vectorStore = await openai.vectorStores.create({
     name: `Eczease File Store - ${path.basename(filePath)} - ${Date.now()}`,
-    // Optional: - in case we want to delete the file
-    // expires_after: {
-    //   anchor: 'last_active_at',
-    //   days: 7, // Example: expire after 7 days of inactivity
-    // },
+    // Set expiration to prevent the "Vector store is expired" error
+    expires_after: {
+      anchor: 'last_active_at',
+      days: 90, // Set to 90 days of inactivity for longer lifespan
+    },
   });
   console.log(`Created vector store: ${vectorStore.id}`);
 
@@ -170,12 +170,23 @@ async function uploadPdfToAssistant(pdfPath: string, assistantId?: string): Prom
             vectorStoreIdToUse = currentVectorStores[0];
             console.log(`Found existing vector store ${vectorStoreIdToUse} linked to assistant.`);
 
-            // Clear the existing vector store
-            await clearVectorStore(vectorStoreIdToUse);
-
-            // Upload the new file to the existing vector store
-            await uploadFileToVectorStore(vectorStoreIdToUse, pdfPath);
-
+            try {
+              // Try to clear the existing vector store
+              await clearVectorStore(vectorStoreIdToUse);
+              // Try to upload the new file to the existing vector store
+              await uploadFileToVectorStore(vectorStoreIdToUse, pdfPath);
+            } catch (uploadError: any) {
+              // Check if the error is due to an expired vector store
+              if (uploadError.code === 'expired' ||
+                  (uploadError.error && uploadError.error.code === 'expired') ||
+                  (uploadError.message && uploadError.message.includes('expired'))) {
+                console.log(`Vector store ${vectorStoreIdToUse} has expired. Creating a new one.`);
+                vectorStoreIdToUse = undefined; // Clear to create a new vector store
+              } else {
+                // Re-throw other errors
+                throw uploadError;
+              }
+            }
         } else {
             console.log(`Assistant ${finalAssistantId} exists but has no vector store linked. Will create a new vector store and link it.`);
             // Proceed to createStoreAndUpload flow below
@@ -184,6 +195,11 @@ async function uploadPdfToAssistant(pdfPath: string, assistantId?: string): Prom
         if (err.status === 404) {
            console.error(`Assistant ${finalAssistantId} not found. Creating a new assistant.`);
            finalAssistantId = undefined; // Clear ID so a new one is created
+        } else if (err.code === 'expired' ||
+                  (err.error && err.error.code === 'expired') ||
+                  (err.message && err.message.includes('expired'))) {
+           console.log(`Vector store linked to assistant ${finalAssistantId} has expired. Creating a new vector store.`);
+           vectorStoreIdToUse = undefined; // Clear to create a new vector store
         } else {
            console.error(`Failed to retrieve or process existing assistant ${finalAssistantId}. Will attempt to create a new one.`, err);
            finalAssistantId = undefined; // Attempt to recover by creating a new one
@@ -192,7 +208,7 @@ async function uploadPdfToAssistant(pdfPath: string, assistantId?: string): Prom
     }
 
     // --- Vector Store and Linking Handling ---
-    if (!vectorStoreIdToUse) { // True if no assistantId provided, assistant not found, or assistant had no store
+    if (!vectorStoreIdToUse) { // True if no assistantId provided, assistant not found, or assistant had no store or store expired
          if (!finalAssistantId) {
              const newAssistant = await createEczeaseAssistant();
              finalAssistantId = newAssistant.id;

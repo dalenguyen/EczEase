@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms'
 import { ChatService } from '../services/chat.service'
 import { RouterLink } from '@angular/router'
 import { MarkdownComponent } from '@analogjs/content'
+import { FeedbackComponent } from '../components/feedback.component'
 
 @Component({
   selector: 'webapp-chat',
-  imports: [CommonModule, FormsModule, RouterLink, FormsModule, MarkdownComponent],
+  imports: [CommonModule, FormsModule, RouterLink, FormsModule, MarkdownComponent, FeedbackComponent],
   template: `
     <div class="container mx-auto max-w-4xl p-4 h-[100vh] flex flex-col">
       <div class="flex items-center justify-between mb-6 flex-shrink-0 flex-wrap">
@@ -51,6 +52,15 @@ import { MarkdownComponent } from '@analogjs/content'
                   </div>
                 } @else {
                   <analog-markdown [content]="message.content" />
+
+                  <!-- Show feedback component only for assistant messages -->
+                  @if (message.role === 'assistant' && !message.isLoading) {
+                    <webapp-feedback
+                      [responseId]="message.id"
+                      [question]="getPrecedingUserQuestion(message.id)"
+                      [answer]="message.content"
+                    />
+                  }
                 }
               </div>
             </div>
@@ -118,6 +128,25 @@ export default class ChatPageComponent {
     if (container) {
       container.scrollTop = container.scrollHeight
     }
+  }
+
+  /**
+   * Get the user question that precedes an assistant's response
+   * @param assistantMessageId The ID of the assistant message
+   * @returns The preceding user question or empty string if not found
+   */
+  getPrecedingUserQuestion(assistantMessageId: string): string {
+    const messages = this.chatService.messageList()
+    const assistantIndex = messages.findIndex(m => m.id === assistantMessageId)
+
+    if (assistantIndex > 0) {
+      const previousMessage = messages[assistantIndex - 1]
+      if (previousMessage.role === 'user') {
+        return previousMessage.content
+      }
+    }
+
+    return ''
   }
 
   async sendMessage() {

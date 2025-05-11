@@ -6,7 +6,7 @@ import { lastValueFrom } from 'rxjs'
 export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
-  id?: string;
+  id: string;
   isLoading?: boolean;
 }
 
@@ -50,8 +50,9 @@ export class ChatService {
   async sendMessage(content: string) {
     if (!content.trim()) return
 
-    // Add user message immediately
-    this.messages.update(msgs => [...msgs, { role: 'user', content }])
+    // Add user message immediately with an ID
+    const userMessageId = this.generateMessageId()
+    this.messages.update(msgs => [...msgs, { role: 'user', content, id: userMessageId }])
     this.loading.set(true)
 
     // Add loading message
@@ -76,9 +77,10 @@ export class ChatService {
 
         // Clean and replace loading message with actual response
         const cleanedMessage = this.cleanReferenceMarkers(response.data.message)
+        const responseId = this.generateMessageId()
         this.messages.update(msgs => msgs.map(msg =>
           msg.id === loadingMessageId
-            ? { role: 'assistant', content: cleanedMessage }
+            ? { role: 'assistant', content: cleanedMessage, id: responseId }
             : msg
         ))
       } else {
@@ -87,9 +89,10 @@ export class ChatService {
     } catch (error) {
       console.error('Failed to send message:', error)
       // Replace loading message with error message
+      const errorId = this.generateMessageId()
       this.messages.update(msgs => msgs.map(msg =>
         msg.id === loadingMessageId
-          ? { role: 'assistant', content: 'Sorry, I encountered an error processing your message.' }
+          ? { role: 'assistant', content: 'Sorry, I encountered an error processing your message.', id: errorId }
           : msg
       ))
     } finally {
