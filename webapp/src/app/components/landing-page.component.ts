@@ -2,11 +2,12 @@ import { Component, inject, model, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
+import { RouterLink } from '@angular/router'
 
 @Component({
   selector: 'webapp-landing-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <!-- Hero Section -->
     <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -41,6 +42,13 @@ import { HttpClient } from '@angular/common/http'
               class="text-gray-600 hover:text-blue-600 transition duration-300"
               >Contact</a
             >
+            <a
+              routerLink="chat"
+              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center"
+              >
+              <span>Chat</span>
+              <span class="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">BETA</span>
+            </a>
           </div>
         </div>
       </nav>
