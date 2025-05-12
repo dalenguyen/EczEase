@@ -15,6 +15,9 @@ export default defineConfig(({ mode }) => {
       reportCompressedSize: true,
       target: ['es2022'],
     },
+    ssr: {
+      noExternal: ['@microsoft/clarity']
+    },
     server: {
       fs: {
         allow: ['.'],

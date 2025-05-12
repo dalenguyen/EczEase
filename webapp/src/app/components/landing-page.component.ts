@@ -3,11 +3,24 @@ import { FormsModule } from '@angular/forms'
 import { CommonModule } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
 import { RouterLink } from '@angular/router'
+import { animate, style, transition, trigger } from '@angular/animations'
+import { AnalyticsService } from '../services/analytics.service'
 
 @Component({
   selector: 'webapp-landing-page',
-  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
+  animations: [
+    trigger('mobileMenuAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, height: 0, overflow: 'hidden' }),
+        animate('200ms ease-out', style({ opacity: 1, height: '*' })),
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, height: '*', overflow: 'hidden' }),
+        animate('200ms ease-in', style({ opacity: 0, height: 0 })),
+      ]),
+    ]),
+  ],
   template: `
     <!-- Hero Section -->
     <div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -26,6 +39,7 @@ import { RouterLink } from '@angular/router'
               >EczEase</span
             >
           </div>
+          <!-- Desktop Menu -->
           <div class="hidden md:flex space-x-6">
             <a
               href="#features"
@@ -44,7 +58,74 @@ import { RouterLink } from '@angular/router'
             >
             <a
               routerLink="chat"
-              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center"
+              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center cursor-pointer"
+              (click)="trackChatClick()"
+              >
+              <span>Chat</span>
+              <span class="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">BETA</span>
+            </a>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button
+            class="md:hidden text-gray-600 focus:outline-none hover:text-blue-600 transition duration-300"
+            (click)="toggleMobileMenu()"
+            aria-label="Toggle menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                *ngIf="!isMobileMenuOpen()"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+              <path
+                *ngIf="isMobileMenuOpen()"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div
+          *ngIf="isMobileMenuOpen()"
+          [@mobileMenuAnimation]
+          class="md:hidden mt-3 border-t border-gray-200 pt-3"
+        >
+          <div class="flex flex-col space-y-3">
+            <a
+              href="#features"
+              class="text-gray-600 hover:text-blue-600 transition duration-300 py-1"
+              (click)="closeMobileMenu()"
+              >Features</a
+            >
+            <a
+              href="#about"
+              class="text-gray-600 hover:text-blue-600 transition duration-300 py-1"
+              (click)="closeMobileMenu()"
+              >About</a
+            >
+            <a
+              href="#contact"
+              class="text-gray-600 hover:text-blue-600 transition duration-300 py-1"
+              (click)="closeMobileMenu()"
+              >Contact</a
+            >
+            <a
+              routerLink="chat"
+              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center py-1 cursor-pointer"
+              (click)="trackChatClickMobile()"
               >
               <span>Chat</span>
               <span class="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">BETA</span>
@@ -171,21 +252,21 @@ import { RouterLink } from '@angular/router'
         <p
           class="text-center text-gray-600 max-w-3xl mx-auto mb-10 sm:mb-16 px-2"
         >
-          Our AI Chatbot will be launching first, with more exciting features
-          coming soon after to enhance your experience.
+          Our AI Chatbot is now available! Try it today while we work on more exciting features
+          coming soon to enhance your experience.
         </p>
 
         <div
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8"
         >
-          <!-- Feature 1 - AI Chatbot (Coming First) -->
+          <!-- Feature 1 - AI Chatbot (Available Now) -->
           <div
             class="bg-blue-100 p-4 sm:p-6 rounded-lg border-2 border-blue-500 relative"
           >
             <div
-              class="absolute top-0 right-0 bg-blue-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-bl-lg rounded-tr-lg"
+              class="absolute top-0 right-0 bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold rounded-bl-lg rounded-tr-lg"
             >
-              COMING FIRST
+              AVAILABLE NOW
             </div>
             <div
               class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-200 rounded-full flex items-center justify-center mb-3 sm:mb-4"
@@ -208,10 +289,17 @@ import { RouterLink } from '@angular/router'
             <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
               AI Chatbot
             </h3>
-            <p class="text-sm sm:text-base text-gray-600">
+            <p class="text-sm sm:text-base text-gray-600 mb-3">
               Get personalized advice and guidance on managing eczema, focusing
               on diet and lifestyle adjustments.
             </p>
+            <a
+              routerLink="chat"
+              (click)="trackAIChatTryNow()"
+              class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-sm transition duration-300"
+            >
+              Try it now
+            </a>
           </div>
 
           <!-- Feature 2 - Coming Soon -->
@@ -394,6 +482,7 @@ import { RouterLink } from '@angular/router'
 })
 export class LandingPageComponent {
   private readonly http = inject(HttpClient)
+  private readonly analytics = inject(AnalyticsService)
 
   name = model<string>('')
   email = model<string>('')
@@ -401,6 +490,7 @@ export class LandingPageComponent {
   showSuccess = signal<boolean>(false)
   errorMessage = signal<string | null>(null)
   currentYear: number = new Date().getFullYear()
+  isMobileMenuOpen = signal<boolean>(false)
 
   onSubmit(event: Event) {
     event.preventDefault()
@@ -457,5 +547,26 @@ export class LandingPageComponent {
     if (contactElement) {
       contactElement.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.set(!this.isMobileMenuOpen())
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen.set(false)
+  }
+
+  trackChatClick(): void {
+    this.analytics.trackEvent('navigation_chat_click')
+  }
+
+  trackChatClickMobile(): void {
+    this.analytics.trackEvent('navigation_chat_click_mobile')
+    this.closeMobileMenu()
+  }
+
+  trackAIChatTryNow(): void {
+    this.analytics.trackEvent('ai_chat_try_now_button_click')
   }
 }

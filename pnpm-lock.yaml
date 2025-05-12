@@ -41,6 +41,9 @@ importers:
       '@angular/router':
         specifier: ^19.0.0
         version: 19.2.3(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
+      '@microsoft/clarity':
+        specifier: ^1.0.0
+        version: 1.0.0
       front-matter:
         specifier: ^4.0.2
         version: 4.0.2
@@ -1353,6 +1356,9 @@ packages:
     resolution: {integrity: sha512-llMXd39jtP0HpQLVI37Bf1m2ADlEb35GYSh1SDSLsBhR+5iCxiNGlT31yqbNtVHygHAtMy6dWFERpU2JgufhPg==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@microsoft/clarity@1.0.0':
+    resolution: {integrity: sha512-2QY6SmXnqRj6dWhNY8NYCN3e53j4zCFebH4wGnNhdGV1mqAsQwql2fT0w8TISxCvwwfVp8idsWLIdrRHOms1PQ==}
 
   '@module-federation/bridge-react-webpack-plugin@0.11.1':
     resolution: {integrity: sha512-SUoJE7dEQZVUwBGN+mcMxLyQcQT0RAOZfcjp6Jq3uS6dTtEmJiR4KKGAaNYBlaszBh/HxmiM1U+zE3G126O7tQ==}
@@ -8993,6 +8999,8 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
+
+  '@microsoft/clarity@1.0.0': {}
 
   '@module-federation/bridge-react-webpack-plugin@0.11.1':
     dependencies:
