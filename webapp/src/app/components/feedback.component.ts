@@ -2,6 +2,7 @@ import { Component, inject, input, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { HttpClient } from '@angular/common/http'
+import { AnalyticsService } from '../services/analytics.service'
 
 @Component({
   selector: 'webapp-feedback',
@@ -79,6 +80,7 @@ import { HttpClient } from '@angular/common/http'
 })
 export class FeedbackComponent {
   private readonly http = inject(HttpClient)
+  private readonly analytics = inject(AnalyticsService)
 
   // Input for the response ID and contents
   responseId = input<string>('')
@@ -91,6 +93,12 @@ export class FeedbackComponent {
   temporaryFeedback = signal<boolean | null>(null)
 
   submitFeedback(isHelpful: boolean): void {
+    // Track the feedback event in Clarity
+    this.analytics.trackEvent(`feedback_${isHelpful ? 'positive' : 'negative'}`)
+
+    // Set custom tag for the feedback
+    this.analytics.setCustomTag('feedback_type', isHelpful ? 'positive' : 'negative')
+
     // Immediate submission on click without showing comment field
     this.temporaryFeedback.set(isHelpful)
     this.finalizeFeedback()
@@ -112,13 +120,19 @@ export class FeedbackComponent {
           if (response.success) {
             this.submitted.set(true)
             this.error.set(null)
+            // Track successful feedback submission
+            this.analytics.trackEvent('feedback_submitted')
           } else {
             this.error.set('Failed')
+            // Track failed feedback submission
+            this.analytics.trackEvent('feedback_error')
           }
         },
         error: (err) => {
           console.error('Feedback submission error:', err)
           this.error.set('Error')
+          // Track error in feedback submission
+          this.analytics.trackEvent('feedback_submission_error')
         },
       })
   }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
 import { RouterLink } from '@angular/router'
 import { animate, style, transition, trigger } from '@angular/animations'
+import { AnalyticsService } from '../services/analytics.service'
 
 @Component({
   selector: 'webapp-landing-page',
@@ -57,7 +58,8 @@ import { animate, style, transition, trigger } from '@angular/animations'
             >
             <a
               routerLink="chat"
-              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center"
+              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center cursor-pointer"
+              (click)="trackChatClick()"
               >
               <span>Chat</span>
               <span class="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">BETA</span>
@@ -122,8 +124,8 @@ import { animate, style, transition, trigger } from '@angular/animations'
             >
             <a
               routerLink="chat"
-              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center py-1"
-              (click)="closeMobileMenu()"
+              class="text-blue-600 hover:text-blue-800 transition duration-300 flex items-center py-1 cursor-pointer"
+              (click)="trackChatClickMobile()"
               >
               <span>Chat</span>
               <span class="ml-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">BETA</span>
@@ -293,6 +295,7 @@ import { animate, style, transition, trigger } from '@angular/animations'
             </p>
             <a
               routerLink="chat"
+              (click)="trackAIChatTryNow()"
               class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-sm transition duration-300"
             >
               Try it now
@@ -479,6 +482,7 @@ import { animate, style, transition, trigger } from '@angular/animations'
 })
 export class LandingPageComponent {
   private readonly http = inject(HttpClient)
+  private readonly analytics = inject(AnalyticsService)
 
   name = model<string>('')
   email = model<string>('')
@@ -551,5 +555,18 @@ export class LandingPageComponent {
 
   closeMobileMenu() {
     this.isMobileMenuOpen.set(false)
+  }
+
+  trackChatClick(): void {
+    this.analytics.trackEvent('navigation_chat_click')
+  }
+
+  trackChatClickMobile(): void {
+    this.analytics.trackEvent('navigation_chat_click_mobile')
+    this.closeMobileMenu()
+  }
+
+  trackAIChatTryNow(): void {
+    this.analytics.trackEvent('ai_chat_try_now_button_click')
   }
 }
