@@ -7,7 +7,7 @@
     "firebase:deploy:rules": "firebase deploy --only firestore:rules",
     "firebase:deploy:webapp": "firebase deploy --only hosting:webapp --project=eczease-prod",
     "lint-staged": "lint-staged",
-    "upload-pdf": "ts-node tools/scripts/upload-pdf-to-assistant.ts"
+    "upload-pdf": "ts-node tools/scripts/upload-pdf-to-vectorstore.ts"
   },
   "private": true,
   "lint-staged": {
