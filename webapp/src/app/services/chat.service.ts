@@ -14,7 +14,7 @@ export interface ChatResponse {
   success: boolean;
   data?: {
     message: string;
-    threadId: string;
+    previousResponseId: string;
   };
   message?: string;
 }
@@ -26,20 +26,14 @@ export class ChatService {
   private readonly http = inject(HttpClient)
 
   private readonly messages = signal<ChatMessage[]>([])
-  private readonly threadId = signal<string | null>(null)
+  private readonly previousResponseId = signal<string | null>(null)
   private readonly loading = signal(false)
   private readonly loadingMessageId = signal<string | null>(null)
 
   readonly messageList = computed(() => this.messages())
   readonly isLoading = computed(() => this.loading())
 
-  /**
-   * Removes reference markers from the message content
-   * @param content The message content to clean
-   * @returns The cleaned message content
-   */
   private cleanReferenceMarkers(content: string): string {
-    // Remove patterns like 【4:1†source】
     return content.replace(/【\d+:\d+†[^】]+】/g, '')
   }
 
@@ -50,12 +44,10 @@ export class ChatService {
   async sendMessage(content: string) {
     if (!content.trim()) return
 
-    // Add user message immediately with an ID
     const userMessageId = this.generateMessageId()
     this.messages.update(msgs => [...msgs, { role: 'user', content, id: userMessageId }])
     this.loading.set(true)
 
-    // Add loading message
     const loadingMessageId = this.generateMessageId()
     this.loadingMessageId.set(loadingMessageId)
     this.messages.update(msgs => [...msgs, {
@@ -68,14 +60,12 @@ export class ChatService {
     try {
       const response = await lastValueFrom(this.http.post<ChatResponse>('/api/v1/chat', {
         message: content,
-        threadId: this.threadId()
+        previousResponseId: this.previousResponseId()
       }))
 
       if (response?.success && response.data) {
-        // Update thread ID if received
-        this.threadId.set(response.data.threadId)
+        this.previousResponseId.set(response.data.previousResponseId)
 
-        // Clean and replace loading message with actual response
         const cleanedMessage = this.cleanReferenceMarkers(response.data.message)
         const responseId = this.generateMessageId()
         this.messages.update(msgs => msgs.map(msg =>
@@ -88,7 +78,6 @@ export class ChatService {
       }
     } catch (error) {
       console.error('Failed to send message:', error)
-      // Replace loading message with error message
       const errorId = this.generateMessageId()
       this.messages.update(msgs => msgs.map(msg =>
         msg.id === loadingMessageId
