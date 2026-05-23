@@ -33,10 +33,6 @@ export class ChatService {
   readonly messageList = computed(() => this.messages())
   readonly isLoading = computed(() => this.loading())
 
-  private cleanReferenceMarkers(content: string): string {
-    return content.replace(/【\d+:\d+†[^】]+】/g, '')
-  }
-
   private generateMessageId(): string {
     return `msg_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
   }
@@ -66,7 +62,7 @@ export class ChatService {
       if (response?.success && response.data) {
         this.previousResponseId.set(response.data.previousResponseId)
 
-        const cleanedMessage = this.cleanReferenceMarkers(response.data.message)
+        const cleanedMessage = response.data.message
         const responseId = this.generateMessageId()
         this.messages.update(msgs => msgs.map(msg =>
           msg.id === loadingMessageId

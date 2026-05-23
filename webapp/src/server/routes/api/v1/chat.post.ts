@@ -29,7 +29,7 @@ export default defineEventHandler(async (event: H3Event) => {
       instructions: INSTRUCTIONS,
       input: message,
       ...(previousResponseId ? { previous_response_id: previousResponseId } : {}),
-      tools: [{ type: 'file_search', vector_store_ids: [String(VECTOR_STORE_ID)] }],
+      tools: [{ type: 'file_search', vector_store_ids: [VECTOR_STORE_ID] }],
     })
 
     return {
