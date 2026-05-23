@@ -35,7 +35,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: true,
       data: {
-        message: response.output_text,
+        message: response.output_text ?? 'No response received',
         previousResponseId: response.id,
       },
     }
