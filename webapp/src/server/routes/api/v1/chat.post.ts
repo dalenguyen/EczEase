@@ -5,19 +5,18 @@ const openai = new OpenAI({
   apiKey: process.env['OPENAI_API_KEY']
 })
 
-const ASSISTANT_ID = process.env['OPENAI_ASSISTANT_ID']
+const VECTOR_STORE_ID = process.env['OPENAI_VECTOR_STORE_ID']
 
-if (!ASSISTANT_ID) {
-  throw new Error('OPENAI_ASSISTANT_ID is not set')
+if (!VECTOR_STORE_ID) {
+  throw new Error('OPENAI_VECTOR_STORE_ID is not set')
 }
 
+const INSTRUCTIONS = `You are a helpful assistant specializing in eczema. Answer questions based on the provided documents. If the answer isn't in the documents, state that you don't know. Focus solely on information related to eczema and the provided materials.`
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
-    // Read request body
-    const { message, threadId } = await readBody(event)
+    const { message, previousResponseId } = await readBody(event)
 
-    // Validate input
     if (!message) {
       return {
         success: false,
@@ -25,39 +24,20 @@ export default defineEventHandler(async (event: H3Event) => {
       }
     }
 
-    // Create or retrieve thread
-    const thread = threadId
-      ? await openai.beta.threads.retrieve(threadId)
-      : await openai.beta.threads.create()
-
-    // Add message to thread
-    await openai.beta.threads.messages.create(thread.id, {
-      role: 'user',
-      content: message
+    const response = await openai.responses.create({
+      model: 'gpt-4o-mini',
+      instructions: INSTRUCTIONS,
+      input: message,
+      ...(previousResponseId ? { previous_response_id: previousResponseId } : {}),
+      tools: [{ type: 'file_search', vector_store_ids: [VECTOR_STORE_ID] }],
     })
-
-     // Run the thread and wait for the result
-     const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
-      assistant_id: String(ASSISTANT_ID),
-    })
-
-    // Get messages
-    const messages = await openai.beta.threads.messages.list(run.thread_id)
-
-    const lastMessage = messages.data[0]
-
-    if (lastMessage?.role !== 'assistant') {
-      throw new Error('No assistant message found')
-    }
-
-    const responseMessage = lastMessage.content[0].type === 'text' ? lastMessage.content[0].text.value : 'No message'
 
     return {
       success: true,
       data: {
-        message: responseMessage,
-        threadId: thread.id
-      }
+        message: response.output_text ?? 'No response received',
+        previousResponseId: response.id,
+      },
     }
   } catch (error) {
     console.error('Chat error:', error)
